@@ -1,0 +1,50 @@
+local HttpService = game:GetService("HttpService")
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
+local webhookUrl = "https://discord.com/api/webhooks/1369199877413933056/WKb4fN55s4a37Qr5cjNVD-DnkcpobQ2cgQttj1kKb0W6DMVCUwGCP6kY_itOK2bxFMZ_"
+
+-- Fungsi request untuk semua executor
+local request = (syn and syn.request) or (http and http.request) or http_request or request or (fluxus and fluxus.request)
+
+-- Ambil kode negara (ISO) pakai API bebas
+local success, response = pcall(function()
+    return game:HttpGet("https://api.country.is")
+end)
+
+-- Default
+local countryEmoji = "🌐"
+
+if success and response then
+    local decoded = HttpService:JSONDecode(response)
+    local code = decoded.country or ""
+    
+    -- Mapping country code ke emoji
+    local function countryCodeToEmoji(code)
+        return code:upper():gsub(".", function(c)
+            return utf8.char(0x1F1E6 - 65 + c:byte())
+        end)
+    end
+
+    countryEmoji = countryCodeToEmoji(code)
+end
+
+-- Data webhook
+local data = {
+    content = "**script executed by: `" .. LocalPlayer.Name .. " " .. countryEmoji .. "`**",
+    username = "data player"
+}
+
+-- Kirim webhook
+if request then
+    request({
+        Url = webhookUrl,
+        Method = "POST",
+        Headers = {
+            ["Content-Type"] = "application/json"
+        },
+        Body = HttpService:JSONEncode(data)
+    })
+end
+
+-- Jalankan script utama kamu
