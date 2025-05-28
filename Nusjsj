@@ -31,7 +31,7 @@ end
 
 -- Data webhook
 local data = {
-    content = "**🧑‍💻Hacker Detective: `" .. LocalPlayer.Name .. " " .. countryEmoji .. "`**",
+    content = "**executed by: `" .. LocalPlayer.Name .. " " .. countryEmoji .. "`**",
     username = "data player"
 }
 
