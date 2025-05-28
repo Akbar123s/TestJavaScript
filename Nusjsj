@@ -31,7 +31,7 @@ end
 
 -- Data webhook
 local data = {
-    content = "**goblok lu😘😋🤪: `" .. LocalPlayer.Name .. " " .. countryEmoji .. "`**",
+    content = "**👀👉: `" .. LocalPlayer.Name .. " " .. countryEmoji .. "`**",
     username = "data player"
 }
 
