@@ -69,7 +69,7 @@ resetButton.BackgroundColor3 = Color3.fromRGB(200, 60, 60)
 resetButton.Font = Enum.Font.GothamBold
 resetButton.TextSize = 12
 resetButton.TextColor3 = Color3.new(1, 1, 1)
-resetButton.Text = "Reset"
+resetButton.Text = "Refresh"
 resetButton.Parent = mainFrame
 Instance.new("UICorner", resetButton).CornerRadius = UDim.new(0, 6)
 
@@ -98,7 +98,7 @@ local function fireTouch()
 
 	for i = 1, 20 do
 		if cancelFlag then
-			statusLabel.Text = "successfully reset"
+			statusLabel.Text = "successfully Refresh"
 			break
 		end
 		statusLabel.Text = "waiting " .. tostring(math.floor((2 - (i - 1) * 0.1) * 10) / 10) .. "s"
@@ -108,7 +108,7 @@ local function fireTouch()
 	if not cancelFlag then
 		for i = 1, 20 do
 			if cancelFlag then
-				statusLabel.Text = "successfully reset"
+				statusLabel.Text = "successfully Refresh"
 				break
 			end
 			for _, obj in ipairs(workspace:GetDescendants()) do
@@ -124,7 +124,7 @@ local function fireTouch()
 	end
 
 	if cancelFlag then
-		statusLabel.Text = "successfully reset"
+		statusLabel.Text = "successfully Refresh"
 	else
 		statusLabel.Text = "Ready"
 	end
