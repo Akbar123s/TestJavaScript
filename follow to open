@@ -1,8 +1,8 @@
-local username = "@LUCASM4U1XO"  
-local userId = 7571374584  
+local username = "cookie_bobayum"  
+local userId = 2030950810  
   
-local timerFile = "follow_brainrot_tiumer.txt"  -- File untuk menyimpan waktu awal muncul GUI  
-local waitTime = 300 -- 5 menit = 300 detik  
+local timerFile = "follow_braitnrot_tiumer.txt"  -- File untuk menyimpan waktu awal muncul GUI  
+local waitTime = 150 -- 5 menit = 300 detik  
   
 -- Simpan waktu mulai ke file jika belum ada  
 if writefile and (not isfile(timerFile)) then  
