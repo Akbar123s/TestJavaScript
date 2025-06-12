@@ -54,7 +54,7 @@ statusLabel.Parent = mainFrame
 -- Tombol Steal
 local stealButton = Instance.new("TextButton")
 stealButton.Size = UDim2.new(1, 0, 0, 26)
-stealButton.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+stealButton.BackgroundColor3 = Color3.fromRGB( 17, 144, 210)
 stealButton.Font = Enum.Font.GothamBold
 stealButton.TextSize = 12
 stealButton.TextColor3 = Color3.new(1, 1, 1)
@@ -142,6 +142,6 @@ resetButton.MouseButton1Click:Connect(function()
 	if isRunning then
 		cancelFlag = true
 	else
-		statusLabel.Text = "Not Found" 
+		statusLabel.Text = "not found" 
 	end
 end)
