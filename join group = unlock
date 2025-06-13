@@ -1,0 +1,24 @@
+-- Ganti dengan ID group kamu
+local groupId = 34479814 -- Ganti dengan ID group kamu
+
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+
+-- Tunggu sampai Player tersedia sepenuhnya
+if not player:IsDescendantOf(Players) then
+	player.AncestryChanged:Wait()
+end
+
+-- Cek apakah player sudah join group
+local function checkGroup()
+	if player:IsInGroup(groupId) then
+		-- Jika sudah join group, jalankan script ini
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/Akbar123s/Script-Roblox-/refs/heads/main/nabaruBrainrot"))()
+	else
+		-- Jika belum join group, jalankan script ini
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/Akbar123s/TestJavaScript/refs/heads/main/join%20group%20untuk%20buka%20Script"))()
+	end
+end
+
+-- Jalankan fungsi
+checkGroup()
