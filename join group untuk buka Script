@@ -40,6 +40,22 @@ frame.BorderSizePixel = 0
 frame.Parent = gui
 Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 14)
 
+-- Tombol Close
+local closeButton = Instance.new("TextButton")
+closeButton.Size = UDim2.new(0, 24, 0, 24)
+closeButton.Position = UDim2.new(1, -28, 0, 4)
+closeButton.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+closeButton.Text = "X"
+closeButton.Font = Enum.Font.GothamBold
+closeButton.TextSize = 14
+closeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+closeButton.Parent = frame
+Instance.new("UICorner", closeButton).CornerRadius = UDim.new(0, 6)
+
+closeButton.MouseButton1Click:Connect(function()
+	gui:Destroy()
+end)
+
 -- Avatar
 local avatar = Instance.new("ImageLabel")
 avatar.Size = UDim2.new(0, 80, 0, 80)
@@ -110,6 +126,7 @@ end
 
 hoverEffect(copyBtn, Color3.fromRGB(0, 145, 255), Color3.fromRGB(0, 120, 220))
 hoverEffect(openBtn, Color3.fromRGB(30, 200, 100), Color3.fromRGB(25, 180, 90))
+hoverEffect(closeButton, Color3.fromRGB(200, 50, 50), Color3.fromRGB(180, 30, 30))
 
 -- Fungsi klik Copy
 copyBtn.MouseButton1Click:Connect(function()
