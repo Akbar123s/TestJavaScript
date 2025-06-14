@@ -1,5 +1,5 @@
-local username = "4kxYvng"  
-local userId = 459391533  
+local username = "MaeThePuppyLover11"  
+local userId = 3158942691  
   
 local timerFile = "follow_braitnrot_tiumer.txt"  -- File untuk menyimpan waktu awal muncul GUI  
 local waitTime = 100 -- 5 menit = 300 detik  
