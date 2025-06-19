@@ -5,7 +5,7 @@ gui.ResetOnSpawn = false
 
 -- FRAME UTAMA (Kecil)
 local mainFrame = Instance.new("Frame")
-mainFrame.Size = UDim2.new(0, 220, 0, 245)
+mainFrame.Size = UDim2.new(0, 220, 0, 230)
 mainFrame.Position = UDim2.new(0.5, -110, 0.5, -130)
 mainFrame.BackgroundColor3 = Color3.fromRGB(33, 33, 33)
 mainFrame.Parent = gui
@@ -188,12 +188,13 @@ local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local player = Players.LocalPlayer
 
--- Variabel global untuk koneksi & GUI
+-- Variabel global
 local boostGui
 local enforceConnection
 local boostBtn
 local boostAktif = false
 
+-- Fungsi aktifkan speed
 local function startEnforceSpeed()
 	local character = player.Character or player.CharacterAdded:Wait()
 	local humanoid = character:WaitForChild("Humanoid")
@@ -211,6 +212,7 @@ local function startEnforceSpeed()
 	end)
 end
 
+-- Fungsi matikan speed
 local function stopEnforceSpeed()
 	if enforceConnection then
 		enforceConnection:Disconnect()
@@ -226,6 +228,7 @@ local function stopEnforceSpeed()
 	end
 end
 
+-- Buat GUI Boost
 local function buatBoostGUI()
 	boostGui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
 	boostGui.Name = "BoostGUI"
@@ -233,32 +236,44 @@ local function buatBoostGUI()
 
 	boostBtn = Instance.new("TextButton", boostGui)
 	boostBtn.Size = UDim2.new(0, 120, 0, 40)
-	boostBtn.Position = UDim2.new(0.5, -60, 1, -60)
-	boostBtn.AnchorPoint = Vector2.new(0.5, 1)
-	boostBtn.Text = "Boost"
+	boostBtn.Position = UDim2.new(0.5, 0, 1, -70) -- ✅ TEPAT DI TENGAH BAWAH
+	boostBtn.AnchorPoint = Vector2.new(0.5, 1) -- ✅ Titik tengah bawah
 	boostBtn.BackgroundColor3 = Color3.fromRGB(44, 44, 44)
 	boostBtn.TextColor3 = Color3.new(1, 1, 1)
 	boostBtn.Font = Enum.Font.GothamBold
 	boostBtn.TextSize = 16
 	boostBtn.BorderSizePixel = 0
+	boostBtn.AutoButtonColor = false
+	boostBtn.Text = "Boost OFF"
 
-	-- Toggle dari tombol Boost
-	local warnaOn = Color3.fromRGB(23, 64, 255)
-	local warnaOff = Color3.fromRGB(44, 44, 44)
+	-- UICorner
+	local corner = Instance.new("UICorner")
+	corner.CornerRadius = UDim.new(0, 10)
+	corner.Parent = boostBtn
 
+	-- UIStroke
+	local stroke = Instance.new("UIStroke")
+	stroke.Color = Color3.fromRGB(255, 255, 255)
+	stroke.Thickness = 2
+	stroke.Transparency = 0.3
+	stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+	stroke.Parent = boostBtn
+
+	-- ON/OFF logic
 	boostBtn.MouseButton1Click:Connect(function()
 		boostAktif = not boostAktif
 
 		if boostAktif then
-			boostBtn.BackgroundColor3 = warnaOn
+			boostBtn.Text = "Boost ON"
 			startEnforceSpeed()
 		else
-			boostBtn.BackgroundColor3 = warnaOff
+			boostBtn.Text = "Boost OFF"
 			stopEnforceSpeed()
 		end
 	end)
 end
 
+-- Hapus GUI
 local function hapusBoostGUI()
 	if boostGui then
 		boostGui:Destroy()
@@ -268,7 +283,7 @@ local function hapusBoostGUI()
 	boostAktif = false
 end
 
--- GABUNGKAN DENGAN TOGGLE GUI
+-- Toggle GUI
 AddToggle(mainTab, {
 	Name = "Boost Speed",
 	Callback = function(v)
@@ -279,6 +294,10 @@ AddToggle(mainTab, {
 		end
 	end
 })
+
+
+
+
 
 
 AddToggle(mainTab, {
@@ -298,13 +317,6 @@ AddToggle(mainTab, {
 	end
 })
 
-
-
-
-AddToggle(mainTab, {
-	Name = "lock base",
-	Callback = function(v) print("Full Bright:", v) end
-})
 
 
 
@@ -334,48 +346,44 @@ AddToggle(visualTab, {
 
 
 -- TOGGLE BUKA GUI
+local TweenService = game:GetService("TweenService")
+
+-- TOMBOL UTAMA
 local toggleBtn = Instance.new("ImageButton", gui)
+toggleBtn.Name = "HoverButton"
 toggleBtn.Size = UDim2.new(0, 55, 0, 55)
 toggleBtn.Position = UDim2.new(0, 10, 0.2, 0)
 toggleBtn.Image = "rbxassetid://121962590520433"
-toggleBtn.BackgroundTransparency = 1
-toggleBtn.Active = true -- Supaya bisa digeser
-toggleBtn.Draggable = true -- Supaya bisa digeser
+toggleBtn.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+toggleBtn.BackgroundTransparency = 0.7
+toggleBtn.Active = true
+toggleBtn.Draggable = true
+
+-- Sudut membulat
 Instance.new("UICorner", toggleBtn).CornerRadius = UDim.new(0, 9)
 
--- Tambahkan UIGradient untuk efek cahaya bergerak
-local gradient = Instance.new("UIGradient", toggleBtn)
-gradient.Rotation = 0
-gradient.Color = ColorSequence.new{
-	ColorSequenceKeypoint.new(0, Color3.new(0.8, 0.8, 0.8)),
-	ColorSequenceKeypoint.new(0.5, Color3.new(1, 1, 1)),
-	ColorSequenceKeypoint.new(1, Color3.new(0.8, 0.8, 0.8))
-}
-gradient.Transparency = NumberSequence.new{
-	NumberSequenceKeypoint.new(0, 1),
-	NumberSequenceKeypoint.new(0.5, 0),
-	NumberSequenceKeypoint.new(1, 1)
-}
+-- UIStroke putih (mati, tidak dinamis)
+local stroke = Instance.new("UIStroke")
+stroke.Parent = toggleBtn
+stroke.Thickness = 2
+stroke.Color = Color3.fromRGB(255, 255, 255)
+stroke.Transparency = 0.3 -- sedikit halus, bisa ubah ke 0 kalau mau full terang
+stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 
--- Tween untuk menggerakkan efek dari kanan ke kiri terus menerus
-local TweenService = game:GetService("TweenService")
-local function animateGradient()
-	while true do
-		local tweenInfo = TweenInfo.new(2, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut)
-		local tween1 = TweenService:Create(gradient, tweenInfo, {Offset = Vector2.new(1, 0)})
-		local tween2 = TweenService:Create(gradient, tweenInfo, {Offset = Vector2.new(-1, 0)})
+-- Efek Hover membesar
+toggleBtn.MouseEnter:Connect(function()
+	TweenService:Create(toggleBtn, TweenInfo.new(0.15), {
+		Size = UDim2.new(0, 60, 0, 60)
+	}):Play()
+end)
 
-		tween1:Play()
-		tween1.Completed:Wait()
-		tween2:Play()
-		tween2.Completed:Wait()
-	end
-end
+toggleBtn.MouseLeave:Connect(function()
+	TweenService:Create(toggleBtn, TweenInfo.new(0.15), {
+		Size = UDim2.new(0, 55, 0, 55)
+	}):Play()
+end)
 
--- Jalankan efek di background
-task.spawn(animateGradient)
-
--- Toggle buka/tutup GUI
+-- TOGGLE BUKA GUI (jika pakai mainFrame)
 local isOpen = false
 toggleBtn.MouseButton1Click:Connect(function()
 	isOpen = not isOpen
@@ -385,6 +393,13 @@ end)
 
 
 switchTab("Main")
+
+
+
+
+
+
+
 
 
 
