@@ -223,7 +223,7 @@ local function stopEnforceSpeed()
 	if char then
 		local hum = char:FindFirstChildOfClass("Humanoid")
 		if hum then
-			hum.WalkSpeed = 16
+			hum.WalkSpeed = 37
 		end
 	end
 end
