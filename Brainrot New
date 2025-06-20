@@ -485,16 +485,54 @@ AddToggle(visualTab, {
 
 
 
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
 
+-- Fungsi untuk membuat tombol Leave di tengah atas
+local function createLeaveButton()
+	local screenGui = Instance.new("ScreenGui")
+	screenGui.Name = "LeaveConfirmationGui"
+	screenGui.ResetOnSpawn = false
+	screenGui.IgnoreGuiInset = true
+	screenGui.Parent = player:WaitForChild("PlayerGui")
+
+	local button = Instance.new("TextButton")
+	button.Name = "LeaveButton"
+	button.Size = UDim2.new(0, 102, 0, 26) -- Ukuran tombol dikecilkan 20% lagi
+	button.Position = UDim2.new(0.5, 0, 0.02, 0) -- Pas di tengah atas
+	button.AnchorPoint = Vector2.new(0.5, 0)
+	button.BackgroundColor3 = Color3.fromRGB(44, 44, 44)
+	button.Text = "Leave Game"
+	button.Font = Enum.Font.GothamBold
+	button.TextSize = 14 -- Disesuaikan agar tetap proporsional
+	button.TextColor3 = Color3.new(1, 1, 1)
+	button.Parent = screenGui
+
+	local corner = Instance.new("UICorner", button)
+	corner.CornerRadius = UDim.new(0, 8) -- Sedikit lebih kecil mengikuti ukuran tombol
+
+	button.MouseButton1Click:Connect(function()
+		game:Shutdown()
+	end)
+end
+
+-- Fungsi untuk menghapus tombol
+local function removeLeaveButton()
+	local gui = player:FindFirstChild("PlayerGui"):FindFirstChild("LeaveConfirmationGui")
+	if gui then
+		gui:Destroy()
+	end
+end
+
+-- Toggle
 AddToggle(visualTab, {
-	Name = "leave",
+	Name = "leave Button",
 	Callback = function(v)
-		print("leave:", v)
+		print("Leave Toggle:", v)
 		if v then
-			-- Langsung leave dari game
-			pcall(function()
-				game:Shutdown()
-			end)
+			createLeaveButton()
+		else
+			removeLeaveButton()
 		end
 	end
 })
