@@ -388,7 +388,7 @@ player.CharacterAdded:Connect(function(character)
 end)
 
 -- Toggle (dengan unequip saat OFF)
-AddToggle(visualTab, {
+AddToggle(miscTab, {
 	Name = "loop Speed Coil",
 	Callback = function(v)
 		print("ESP aktif:", v)
@@ -436,7 +436,7 @@ AddToggle(visualTab, {
 
 
 
-AddToggle(miscTab, {
+AddToggle(visualTab, {
 	Name = "Rejoin",
 	Callback = function(v)
 		print("rejoin:", v)
@@ -455,7 +455,7 @@ AddToggle(miscTab, {
 })
 
 
-AddToggle(miscTab, {
+AddToggle(visualTab, {
 	Name = "server hop",
 	Callback = function(v)
 		print("server lain:", v)
@@ -486,7 +486,7 @@ AddToggle(miscTab, {
 
 
 
-AddToggle(miscTab, {
+AddToggle(visualTab, {
 	Name = "leave",
 	Callback = function(v)
 		print("leave:", v)
