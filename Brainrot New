@@ -382,6 +382,19 @@ AddToggle(mainTab, {
 
 
 
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+
+player.CharacterAdded:Connect(function()
+	boostAktif = false
+
+	if boostBtn then
+		boostBtn.Text = "Boost OFF"
+	end
+end)
+
+
+
 AddToggle(mainTab, {
 	Name = "TP Shop",
 	Callback = function(v)
