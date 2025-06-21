@@ -155,32 +155,117 @@ AddToggle(mainTab, {
 
 
 
+local Players = game:GetService("Players")
+local localPlayer = Players.LocalPlayer
+
+-- Tabel untuk menyimpan koneksi & ESP
+local ESPConnections = {}
+local ESPActive = false
+
+-- Fungsi untuk buat ESP (Billboard + Highlight)
+local function createESP(player)
+	if player == localPlayer then return end
+
+	local function onCharacterAdded(character)
+		local head = character:WaitForChild("Head", 5)
+		if not head then return end
+
+		-- Bersihkan yang lama
+		if head:FindFirstChild("ESP_Name") then head:FindFirstChild("ESP_Name"):Destroy() end
+		if character:FindFirstChild("ESP_Highlight") then character:FindFirstChild("ESP_Highlight"):Destroy() end
+
+		-- BillboardGui
+		local billboard = Instance.new("BillboardGui")
+		billboard.Name = "ESP_Name"
+		billboard.Adornee = head
+		billboard.Size = UDim2.new(0, 100, 0, 40)
+		billboard.StudsOffset = Vector3.new(0, 1.5, 0)
+		billboard.AlwaysOnTop = true
+		billboard.Parent = head
+
+		local label = Instance.new("TextLabel")
+		label.Size = UDim2.new(1, 0, 1, 0)
+		label.BackgroundTransparency = 1
+		label.Text = player.Name
+		label.TextColor3 = Color3.new(1, 1, 1)
+		label.TextStrokeTransparency = 0.5
+		label.Font = Enum.Font.SourceSansBold
+		label.TextScaled = true
+		label.Parent = billboard
+
+		-- Highlight merah
+		local highlight = Instance.new("Highlight")
+		highlight.Name = "ESP_Highlight"
+		highlight.Adornee = character
+		highlight.FillColor = Color3.new(1, 0, 0)
+		highlight.FillTransparency = 0.5
+		highlight.OutlineColor = Color3.new(0, 0, 0)
+		highlight.OutlineTransparency = 0.2
+		highlight.Parent = character
+	end
+
+	-- Jalankan sekarang & saat respawn
+	if player.Character then onCharacterAdded(player.Character) end
+	local charConnect = player.CharacterAdded:Connect(onCharacterAdded)
+
+	-- Simpan koneksi untuk dibersihkan nanti
+	ESPConnections[player] = charConnect
+end
+
+-- Fungsi hapus semua ESP
+local function clearAllESP()
+	for _, player in ipairs(Players:GetPlayers()) do
+		if player ~= localPlayer then
+			local character = player.Character
+			if character then
+				if character:FindFirstChild("ESP_Highlight") then
+					character.ESP_Highlight:Destroy()
+				end
+				if character:FindFirstChild("Head") and character.Head:FindFirstChild("ESP_Name") then
+					character.Head.ESP_Name:Destroy()
+				end
+			end
+			if ESPConnections[player] then
+				ESPConnections[player]:Disconnect()
+				ESPConnections[player] = nil
+			end
+		end
+	end
+end
+
+-- Toggle ESP dari UI
 AddToggle(mainTab, {
-	Name = "TP Shop",
+	Name = "esp player",
 	Callback = function(v)
+		ESPActive = v
+		print("ESP Player:", v)
+
 		if v then
-			local player = game.Players.LocalPlayer
-			local character = player.Character or player.CharacterAdded:Wait()
-			local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+			-- Aktifkan ESP ke semua pemain
+			for _, player in ipairs(Players:GetPlayers()) do
+				createESP(player)
+			end
 
-			local cf = CFrame.new(
-				-378.420959, -6.25197887, 59.4905052,
-				0.106838159, -1.85177775e-08, 0.994276404,
-				1.08971683e-07, 1, 6.91502233e-09,
-				-0.994276404, 1.07609189e-07, 0.106838159
-			)
-
-			humanoidRootPart.CFrame = cf
-			humanoidRootPart.Anchored = true
-			print("✅ Teleport ke Shop dan Anchor aktif 2 detik.")
-
-			task.delay(2, function()
-				humanoidRootPart.Anchored = false
-				print("🔓 Anchor dilepas.")
+			-- Deteksi pemain baru join
+			ESPConnections["_PlayerAdded"] = Players.PlayerAdded:Connect(function(player)
+				createESP(player)
 			end)
+		else
+			-- Matikan dan bersihkan semua ESP
+			clearAllESP()
+
+			if ESPConnections["_PlayerAdded"] then
+				ESPConnections["_PlayerAdded"]:Disconnect()
+				ESPConnections["_PlayerAdded"] = nil
+			end
 		end
 	end
 })
+
+
+
+
+
 
 
 
@@ -297,22 +382,29 @@ AddToggle(mainTab, {
 
 
 
-
-
-
 AddToggle(mainTab, {
-	Name = "Reset",
+	Name = "TP Shop",
 	Callback = function(v)
-		print("Godmode:", v)
 		if v then
 			local player = game.Players.LocalPlayer
 			local character = player.Character or player.CharacterAdded:Wait()
+			local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
 
-			-- Kurangi darah menjadi 0 untuk reset karakter
-			local humanoid = character:FindFirstChildOfClass("Humanoid")
-			if humanoid then
-				humanoid.Health = 0
-			end
+			local cf = CFrame.new(
+				-378.420959, -6.25197887, 59.4905052,
+				0.106838159, -1.85177775e-08, 0.994276404,
+				1.08971683e-07, 1, 6.91502233e-09,
+				-0.994276404, 1.07609189e-07, 0.106838159
+			)
+
+			humanoidRootPart.CFrame = cf
+			humanoidRootPart.Anchored = true
+			print("✅ Teleport ke Shop dan Anchor aktif 2 detik.")
+
+			task.delay(2, function()
+				humanoidRootPart.Anchored = false
+				print("🔓 Anchor dilepas.")
+			end)
 		end
 	end
 })
