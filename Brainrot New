@@ -142,12 +142,12 @@ end
 
 -- TOGGLE AUTO STEAL
 AddToggle(mainTab, {
-	Name = "auto Steal",
+	Name = "Steal | Arbix Hub",
 	Callback = function(v)
 		print("Godmode:", v)
 		if v then
 			-- Saat toggle diaktifkan (ON)
-			loadstring(game:HttpGet("https://raw.githubusercontent.com/Youifpg/Steal-a-Brianrot/refs/heads/main/Instant%20steal.lua"))()
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/Youifpg/Steal-a-Brianrot/refs/heads/main/Steal.lua"))()
 		end
 	end
 })
@@ -785,9 +785,10 @@ local function processBillboardIfNeeded(obj)
 	end
 end
 
--- Proses awal semua objek
+-- Proses awal semua objek yang sudah ada
 for _, obj in ipairs(workspace:GetDescendants()) do
 	processBillboardIfNeeded(obj)
 end
 
--- Pantau objek baru yang mas
+-- Pantau jika ada objek baru yang masuk ke workspace
+workspace.DescendantAdded:Connect(function(o
