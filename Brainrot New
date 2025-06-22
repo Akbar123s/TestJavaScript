@@ -380,16 +380,10 @@ AddToggle(mainTab, {
 	end
 })
 
-
-
-local Players = game:GetService("Players")
-local player = Players.LocalPlayer
-
+-- Tambahan di akhir script
 player.CharacterAdded:Connect(function()
-	boostAktif = false
-
-	if boostBtn then
-		boostBtn.Text = "Boost OFF"
+	if boostAktif then
+		startEnforceSpeed()
 	end
 end)
 
