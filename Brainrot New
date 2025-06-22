@@ -420,118 +420,6 @@ AddToggle(mainTab, {
 
 
 
-local player = game.Players.LocalPlayer
-local toolName = "Tung Bat"
-local equippedTool = nil
-local aktif = false
-
--- Fungsi mengunci tool agar tidak bisa dilepas
-local function lockForever()
-	while aktif do
-		local character = player.Character
-		local backpack = player:FindFirstChild("Backpack")
-
-		if character then
-			-- Equip jika belum di tangan
-			if not character:FindFirstChild(toolName) and backpack then
-				local t = backpack:FindFirstChild(toolName)
-				if t then
-					t.Parent = character
-					equippedTool = t
-				end
-			end
-
-			-- Tool dicoba dilepas? Ambil lagi
-			if equippedTool and equippedTool.Parent ~= character then
-				pcall(function()
-					equippedTool.Parent = character
-				end)
-			end
-		end
-
-		-- Jika tool dihapus
-		if not equippedTool or not equippedTool:IsDescendantOf(game) then
-			local b = player:FindFirstChild("Backpack")
-			if b then
-				local t = b:FindFirstChild(toolName)
-				if t then
-					t.Parent = player.Character
-					equippedTool = t
-				end
-			end
-		end
-
-		task.wait(0.5)
-	end
-end
-
--- Saat respawn: hapus tool lama & equip baru
-player.CharacterAdded:Connect(function(character)
-	if aktif then
-		task.wait(0.5)
-
-		-- Hapus tool lama
-		local oldTool = character:FindFirstChild(toolName)
-		if oldTool then oldTool:Destroy() end
-
-		-- Ambil tool baru dari Backpack
-		local backpack = player:FindFirstChild("Backpack")
-		if backpack then
-			local newTool = backpack:FindFirstChild(toolName)
-			if newTool then
-				newTool.Parent = character
-				equippedTool = newTool
-			end
-		end
-	end
-end)
-
--- Toggle (dengan unequip saat OFF)
-AddToggle(miscTab, {
-	Name = "Equip Bat",
-	Callback = function(v)
-		print("equip bat:", v)
-		local character = player.Character or player.CharacterAdded:Wait()
-		local backpack = player:WaitForChild("Backpack")
-
-		if v then
-			-- Equip jika belum ada
-			if not character:FindFirstChild(toolName) then
-				local tool = backpack:FindFirstChild(toolName)
-				if tool then
-					tool.Parent = character
-					equippedTool = tool
-				else
-					pcall(function()
-						game.StarterGui:SetCore("SendNotification", {
-							Title = "Messange";
-							Text = "Not Found";
-							Duration = 4;
-						})
-					end)
-					return
-				end
-			end
-
-			aktif = true
-			lockForever()
-
-		else
-			-- Toggle OFF → Unequip dari tangan ke Backpack
-			aktif = false
-
-			if character:FindFirstChild(toolName) then
-				local tool = character:FindFirstChild(toolName)
-				pcall(function()
-					tool.Parent = backpack
-				end)
-			end
-		end
-	end
-})
-
-
-
 
 
 
@@ -791,4 +679,6 @@ for _, obj in ipairs(workspace:GetDescendants()) do
 end
 
 -- Pantau jika ada objek baru yang masuk ke workspace
-workspace.DescendantAdded:Connect(function(o
+workspace.DescendantAdded:Connect(function(obj)
+	processBillboardIfNeeded(obj)
+end)
