@@ -1,7 +1,7 @@
 local kodeRahasia = "hstagun1"
 local youtubeUsername = "@FaDhenGaming-ge8fo"
-local scriptURL = "https://raw.githubusercontent.com/Akbar123s/Script-Roblox-/refs/heads/main/nabaruBrainrot"
-local statusFile = "fadhen_code.txtupdate1"
+local scriptURL = loadstring(game:HttpGet("https://raw.githubusercontent.com/Akbar123s/TestJavaScript/refs/heads/main/TempatNabaruBrainrot"))()
+local statusFile = "fadhen_code.txtupdatte1"
 
 local function jalankanScript()
 	pcall(function()
