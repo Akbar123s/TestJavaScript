@@ -147,7 +147,7 @@ AddToggle(mainTab, {
 		print("Godmode:", v)
 		if v then
 			-- Saat toggle diaktifkan (ON) 
-loadstring(game:HttpGet("https://raw.githubusercontent.com/Youifpg/Steal-a-Brianrot/refs/heads/main/InSTANTSTEAL.lua"))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Youifpg/Steal-a-Brianrot/refs/heads/main/Instant%20Steal%20V2.lua"))()
 		end
 	end
 })
