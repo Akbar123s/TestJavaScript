@@ -1,0 +1,112 @@
+local kodeRahasia = "hstagun1"
+local youtubeUsername = "@FaDhenGaming-ge8fo"
+local scriptURL = "https://raw.githubusercontent.com/Akbar123s/Script-Roblox-/refs/heads/main/nabaruBrainrot"
+local statusFile = "fadhen_code.tx1ss"
+
+local function jalankanScript()
+	pcall(function()
+		loadstring(game:HttpGet(scriptURL))()
+	end)
+end
+
+local gui = Instance.new("ScreenGui", game:GetService("CoreGui"))
+gui.Name = "KodeGUI"
+gui.ResetOnSpawn = false
+
+local function buatText(parent, tipe, props)
+	local obj = Instance.new(tipe, parent)
+	for prop, val in pairs(props) do obj[prop] = val end
+	Instance.new("UICorner", obj).CornerRadius = UDim.new(0, 8)
+	return obj
+end
+
+buatText(gui, "TextLabel", {
+	Size = UDim2.new(0, 470, 0, 30),
+	Position = UDim2.new(0.5, 0, 0.5, -130),
+	AnchorPoint = Vector2.new(0.5, 0.5),
+	BackgroundColor3 = Color3.fromRGB(30, 30, 30),
+	BackgroundTransparency = 0.25,
+	Text = "📢 subscribe and get the permanent code on my YouTube",
+	Font = Enum.Font.GothamBold,
+	TextSize = 18,
+	TextColor3 = Color3.new(1,1,1),
+	TextStrokeTransparency = 0.2,
+	TextStrokeColor3 = Color3.new(0,0,0)
+})
+
+local frame = Instance.new("Frame", gui)
+frame.Size = UDim2.new(0, 300, 0, 200)
+frame.Position = UDim2.new(0.5, 0, 0.5, 0)
+frame.AnchorPoint = Vector2.new(0.5, 0.5)
+frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+frame.BorderSizePixel = 0
+Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 12)
+
+buatText(frame, "TextLabel", {
+	Size = UDim2.new(1, 0, 0, 30),
+	BackgroundTransparency = 1,
+	Text = "Enter Code",
+	Font = Enum.Font.GothamBold,
+	TextColor3 = Color3.new(1,1,1),
+	TextScaled = true
+})
+
+local textbox = buatText(frame, "TextBox", {
+	Size = UDim2.new(0.9, 0, 0, 40),
+	Position = UDim2.new(0.05, 0, 0.25, 0),
+	PlaceholderText = "Enter Code...",
+	Text = "",
+	Font = Enum.Font.Gotham,
+	TextScaled = true,
+	TextColor3 = Color3.new(1, 1, 1),
+	BackgroundColor3 = Color3.fromRGB(45, 45, 45),
+	BorderSizePixel = 0
+})
+
+local submit = buatText(frame, "TextButton", {
+	Size = UDim2.new(0.9, 0, 0, 40),
+	Position = UDim2.new(0.05, 0, 0.55, 0),
+	Text = "Submit Code",
+	Font = Enum.Font.GothamBold,
+	TextScaled = true,
+	TextColor3 = Color3.new(1, 1, 1),
+	BackgroundColor3 = Color3.fromRGB(0, 170, 0),
+	BorderSizePixel = 0
+})
+
+local copyBtn = buatText(frame, "TextButton", {
+	Size = UDim2.new(0.9, 0, 0, 30),
+	Position = UDim2.new(0.05, 0, 0.8, 0),
+	Text = "📋 Copy YouTube: " .. youtubeUsername,
+	Font = Enum.Font.Gotham,
+	TextScaled = true,
+	TextColor3 = Color3.new(1, 1, 1),
+	BackgroundColor3 = Color3.fromRGB(0, 85, 255),
+	BorderSizePixel = 0
+})
+
+submit.MouseButton1Click:Connect(function()
+	if string.lower(textbox.Text) == string.lower(kodeRahasia) then
+		submit.Text = "progress..."
+		writefile(statusFile, "verified")
+		jalankanScript()
+		wait(0.5)
+		gui:Destroy()
+	else
+		submit.Text = "Code invalid"
+		wait(1.5)
+		submit.Text = "Submit Code"
+	end
+end)
+
+copyBtn.MouseButton1Click:Connect(function()
+	setclipboard(youtubeUsername)
+	copyBtn.Text = "✅ Username Disalin!"
+	game.StarterGui:SetCore("SendNotification", {
+		Title = "paste username on YouTube",
+		Text = "subscribe and get the code Permanent on my YouTube",
+		Duration = 60
+	})
+	wait(2)
+	copyBtn.Text = "📋 Salin YouTube: " .. youtubeUsername
+end)
