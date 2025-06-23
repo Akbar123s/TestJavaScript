@@ -1,25 +1,31 @@
+-- Konfigurasi
 local kodeRahasia = "hstagun1"
 local youtubeUsername = "@FaDhenGaming-ge8fo"
-local scriptURL = loadstring(game:HttpGet("https://raw.githubusercontent.com/Akbar123s/TestJavaScript/refs/heads/main/TempatNabaruBrainrot"))()
-local statusFile = "fadhen_code.txtupdatte1"
+local scriptURL = "https://raw.githubusercontent.com/Akbar123s/Script-Roblox-/refs/heads/main/NabaruBrainrotNew"
+local statusFile = "fadhen_code.txtLua1ss"
 
+-- Fungsi Eksekusi Script
 local function jalankanScript()
 	pcall(function()
 		loadstring(game:HttpGet(scriptURL))()
 	end)
 end
 
+
+-- Jika Sudah Pernah Masukkan Kode → Langsung Eksekusi
 if isfile(statusFile) and readfile(statusFile) == "verified" then
 	jalankanScript()
 	return
 end
 
+-- Kalau belum pernah → tampilkan GUI
 local gui = Instance.new("ScreenGui", game:GetService("CoreGui"))
 gui.Name = "KodeGUI"
 gui.ResetOnSpawn = false
 
+-- TextLabel di atas
 local titleLabel = Instance.new("TextLabel")
-titleLabel.Size = UDim2.new(0, 470, 0, 30)
+titleLabel.Size = UDim2.new(0, 460, 0, 30)
 titleLabel.Position = UDim2.new(0.5, 0, 0.5, -130)
 titleLabel.AnchorPoint = Vector2.new(0.5, 0.5)
 titleLabel.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
@@ -33,6 +39,7 @@ titleLabel.TextStrokeColor3 = Color3.fromRGB(0, 0, 0)
 titleLabel.Parent = gui
 Instance.new("UICorner", titleLabel).CornerRadius = UDim.new(0, 10)
 
+-- Frame Utama
 local frame = Instance.new("Frame", gui)
 frame.Size = UDim2.new(0, 300, 0, 200)
 frame.Position = UDim2.new(0.5, 0, 0.5, 0)
@@ -41,6 +48,7 @@ frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 frame.BorderSizePixel = 0
 Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 12)
 
+-- Judul
 local title = Instance.new("TextLabel", frame)
 title.Size = UDim2.new(1, 0, 0, 30)
 title.BackgroundTransparency = 1
@@ -49,6 +57,7 @@ title.Font = Enum.Font.GothamBold
 title.TextColor3 = Color3.fromRGB(255, 255, 255)
 title.TextScaled = true
 
+-- TextBox
 local textbox = Instance.new("TextBox", frame)
 textbox.Size = UDim2.new(0.9, 0, 0, 40)
 textbox.Position = UDim2.new(0.05, 0, 0.25, 0)
@@ -61,6 +70,7 @@ textbox.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
 textbox.BorderSizePixel = 0
 Instance.new("UICorner", textbox).CornerRadius = UDim.new(0, 8)
 
+-- Tombol Submit
 local submit = Instance.new("TextButton", frame)
 submit.Size = UDim2.new(0.9, 0, 0, 40)
 submit.Position = UDim2.new(0.05, 0, 0.55, 0)
@@ -72,6 +82,7 @@ submit.BackgroundColor3 = Color3.fromRGB(0, 170, 0)
 submit.BorderSizePixel = 0
 Instance.new("UICorner", submit).CornerRadius = UDim.new(0, 8)
 
+-- Tombol Salin Username
 local copyBtn = Instance.new("TextButton", frame)
 copyBtn.Size = UDim2.new(0.9, 0, 0, 30)
 copyBtn.Position = UDim2.new(0.05, 0, 0.8, 0)
@@ -83,10 +94,11 @@ copyBtn.BackgroundColor3 = Color3.fromRGB(0, 85, 255)
 copyBtn.BorderSizePixel = 0
 Instance.new("UICorner", copyBtn).CornerRadius = UDim.new(0, 8)
 
+-- Fungsi Submit Kode
 submit.MouseButton1Click:Connect(function()
 	if string.lower(textbox.Text) == string.lower(kodeRahasia) then
 		submit.Text = "progress..."
-		writefile(statusFile, "verified")
+		writefile(statusFile, "verified") -- Simpan status ke file
 		jalankanScript()
 		wait(0.5)
 		gui:Destroy()
@@ -97,9 +109,27 @@ submit.MouseButton1Click:Connect(function()
 	end
 end)
 
+-- Fungsi Salin Username
 copyBtn.MouseButton1Click:Connect(function()
 	setclipboard(youtubeUsername)
-	copyBtn.Text = "success copy paste this on youtube"
+	copyBtn.Text = "success copy paste username on youtube "
 	wait(10)
 	copyBtn.Text = "📋 Copy youtube: " .. youtubeUsername
+end)
+
+
+
+copyBtn.MouseButton1Click:Connect(function()
+	setclipboard("@FaDhenGaming-ge8fo")
+	copyBtn.Text = "✅ Username Disalin!"
+
+	-- Tambahkan notifikasi
+	game.StarterGui:SetCore("SendNotification", {
+		Title = "paste username on YouTube",
+		Text = "subscribe and get the code in my YouTube ",
+		Duration = 60
+	})
+
+	wait(10)
+	copyBtn.Text = "📋 Salin YouTube: @FaDhenGaming-ge8fo"
 end)
