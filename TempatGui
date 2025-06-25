@@ -2,7 +2,7 @@
 local kodeRahasia = "ayam"
 local youtubeUsername = "@FaDhenGaming-ge8fo"
 local scriptURL = "https://raw.githubusercontent.com/Akbar123s/Script-Roblox-/refs/heads/main/NabaruBrainrotNew"
-local statusFile = "fadhen_code.txtLua1ss"
+local statusFile = "fadhen_code.txtLua472ss"
 
 -- Fungsi Eksekusi Script
 local function jalankanScript()
