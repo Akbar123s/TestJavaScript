@@ -1,5 +1,5 @@
 -- Konfigurasi
-local kodeRahasia = "hstagun1"
+local kodeRahasia = "ayam"
 local youtubeUsername = "@FaDhenGaming-ge8fo"
 local scriptURL = "https://raw.githubusercontent.com/Akbar123s/Script-Roblox-/refs/heads/main/NabaruBrainrotNew"
 local statusFile = "fadhen_code.txtLua1ss"
