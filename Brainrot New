@@ -1,9 +1,17 @@
-local player = game.Players.LocalPlayer
-local gui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
+-- Akses CoreGui karena pakai executor
+local CoreGui = game:GetService("CoreGui")
+
+-- Hapus GUI lama jika sudah ada
+if CoreGui:FindFirstChild("FaDhenModernMini") then
+    CoreGui.FaDhenModernMini:Destroy()
+end
+
+-- Buat ScreenGui di CoreGui
+local gui = Instance.new("ScreenGui", CoreGui)
 gui.Name = "FaDhenModernMini"
 gui.ResetOnSpawn = false
 
--- FRAME UTAMA (Kecil)
+-- FRAME UTAMA
 local mainFrame = Instance.new("Frame")
 mainFrame.Size = UDim2.new(0, 220, 0, 230)
 mainFrame.Position = UDim2.new(0.5, -110, 0.5, -130)
@@ -13,10 +21,8 @@ mainFrame.Active = true
 mainFrame.Draggable = true
 mainFrame.Visible = false
 
--- Tambahkan UICorner
 Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 10)
 
--- Tambahkan UIStroke
 local stroke = Instance.new("UIStroke", mainFrame)
 stroke.Thickness = 2
 stroke.Color = Color3.fromRGB(100, 100, 100)
@@ -39,7 +45,7 @@ shadow.ZIndex = 0
 local title = Instance.new("TextLabel", mainFrame)
 title.Size = UDim2.new(1, 0, 0, 28)
 title.BackgroundTransparency = 1
-title.Text = "XxLegendxX"
+title.Text = "yt fadhengaming"
 title.Font = Enum.Font.GothamBold
 title.TextSize = 13
 title.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -117,7 +123,7 @@ local function AddToggle(tab, data)
 	btn.Font = Enum.Font.Gotham
 	btn.TextSize = 15
 	btn.TextXAlignment = Enum.TextXAlignment.Left
-	btn.Text = data.Name -- Tidak ada icon
+	btn.Text = data.Name
 	btn.AutoButtonColor = false
 	Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 8)
 
@@ -142,12 +148,16 @@ end
 
 -- TOGGLE AUTO STEAL
 AddToggle(mainTab, {
-	Name = "Steal | Arbix Hub",
+	Name = "Auto Steal",
 	Callback = function(v)
 		print("Godmode:", v)
 		if v then
-			-- Saat toggle diaktifkan (ON) 
-loadstring(game:HttpGet("https://raw.githubusercontent.com/Youifpg/Steal-a-Brianrot/refs/heads/main/Instant%20Steal%20V2.lua"))()
+			-- Saat toggle diaktifkan (ON), tampilkan notifikasi saja
+			game.StarterGui:SetCore("SendNotification", {
+				Title = "Message",
+				Text = "The script is broken, please wait for the next update",
+				Duration = 5
+			})
 		end
 	end
 })
@@ -682,3 +692,14 @@ end
 workspace.DescendantAdded:Connect(function(obj)
 	processBillboardIfNeeded(obj)
 end)
+
+
+
+
+
+
+
+
+
+
+
