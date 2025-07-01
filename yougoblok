@@ -1,0 +1,791 @@
+-- Akses CoreGui karena pakai executor
+local CoreGui = game:GetService("CoreGui")
+
+-- Hapus GUI lama jika sudah ada
+if CoreGui:FindFirstChild("FaDhenModernMini") then
+    CoreGui.FaDhenModernMini:Destroy()
+end
+
+-- Buat ScreenGui di CoreGui
+local gui = Instance.new("ScreenGui", CoreGui)
+gui.Name = "FaDhenModernMini"
+gui.ResetOnSpawn = false
+
+-- FRAME UTAMA
+local mainFrame = Instance.new("Frame")
+mainFrame.Size = UDim2.new(0, 220, 0, 230)
+mainFrame.Position = UDim2.new(0.5, -110, 0.5, -130)
+mainFrame.BackgroundColor3 = Color3.fromRGB(33, 33, 33)
+mainFrame.Parent = gui
+mainFrame.Active = true
+mainFrame.Draggable = true
+mainFrame.Visible = false
+
+Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 10)
+
+local stroke = Instance.new("UIStroke", mainFrame)
+stroke.Thickness = 2
+stroke.Color = Color3.fromRGB(100, 100, 100)
+stroke.Transparency = 0
+
+-- SHADOW
+local shadow = Instance.new("ImageLabel", mainFrame)
+shadow.AnchorPoint = Vector2.new(0.5, 0.5)
+shadow.Position = UDim2.new(0.5, 0, 0.5, 0)
+shadow.Size = UDim2.new(1, 20, 1, 20)
+shadow.Image = "rbxassetid://5028857084"
+shadow.ImageColor3 = Color3.new(0, 0, 0)
+shadow.ImageTransparency = 0.7
+shadow.ScaleType = Enum.ScaleType.Slice
+shadow.SliceCenter = Rect.new(24, 24, 276, 276)
+shadow.BackgroundTransparency = 1
+shadow.ZIndex = 0
+
+-- JUDUL
+local title = Instance.new("TextLabel", mainFrame)
+title.Size = UDim2.new(1, 0, 0, 28)
+title.BackgroundTransparency = 1
+title.Text = "YT FaDhenGaming"
+title.Font = Enum.Font.GothamBold
+title.TextSize = 13
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+
+-- TAB CONTAINER
+local tabContainer = Instance.new("Frame", mainFrame)
+tabContainer.Size = UDim2.new(1, -16, 0, 24)
+tabContainer.Position = UDim2.new(0, 8, 0, 30)
+tabContainer.BackgroundTransparency = 1
+
+local tabLayout = Instance.new("UIListLayout", tabContainer)
+tabLayout.FillDirection = Enum.FillDirection.Horizontal
+tabLayout.Padding = UDim.new(0, 5)
+tabLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+
+-- ISI KONTEN
+local contentFrame = Instance.new("Frame", mainFrame)
+contentFrame.Position = UDim2.new(0, 8, 0, 60)
+contentFrame.Size = UDim2.new(1, -16, 1, -70)
+contentFrame.BackgroundTransparency = 1
+
+-- TAB
+local tabs = {}
+local function createTab(name)
+	local tab = Instance.new("Frame", contentFrame)
+	tab.Size = UDim2.new(1, 0, 1, 0)
+	tab.BackgroundTransparency = 1
+	tab.Visible = false
+
+	local layout = Instance.new("UIListLayout", tab)
+	layout.Padding = UDim.new(0, 6)
+	layout.VerticalAlignment = Enum.VerticalAlignment.Top
+	layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+
+	tabs[name] = tab
+	return tab
+end
+
+local mainTab = createTab("Main")
+local visualTab = createTab("Visual")
+local miscTab = createTab("Misc")
+
+local function switchTab(name)
+	for tabName, tab in pairs(tabs) do
+		tab.Visible = (tabName == name)
+	end
+end
+
+-- TOMBOL TAB MINI
+local function createTabButton(text, tabName)
+	local btn = Instance.new("TextButton", tabContainer)
+	btn.Size = UDim2.new(0, 60, 0, 22)
+	btn.Text = text
+	btn.Font = Enum.Font.Gotham
+	btn.TextSize = 13
+	btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+	btn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+	Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 6)
+
+	btn.MouseButton1Click:Connect(function()
+		switchTab(tabName)
+	end)
+end
+
+createTabButton("Main", "Main")
+createTabButton("Visual", "Visual")
+createTabButton("Misc", "Misc")
+
+-- TOGGLE MINI (TANPA ICON)
+local function AddToggle(tab, data)
+	local btn = Instance.new("TextButton", tab)
+	btn.Size = UDim2.new(1, -10, 0, 28)
+	btn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+	btn.TextColor3 = Color3.fromRGB(230, 230, 230)
+	btn.Font = Enum.Font.Gotham
+	btn.TextSize = 15
+	btn.TextXAlignment = Enum.TextXAlignment.Left
+	btn.Text = data.Name
+	btn.AutoButtonColor = false
+	Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 8)
+
+	local toggle = Instance.new("Frame", btn)
+	toggle.Size = UDim2.new(0, 12, 0, 12)
+	toggle.Position = UDim2.new(1, -20, 0.5, -6)
+	toggle.BackgroundColor3 = Color3.fromRGB(130, 130, 130)
+	toggle.BorderSizePixel = 0
+	Instance.new("UICorner", toggle).CornerRadius = UDim.new(1, 0)
+
+	local state = false
+	btn.MouseButton1Click:Connect(function()
+		state = not state
+		toggle.BackgroundColor3 = state and Color3.fromRGB(0, 200, 100) or Color3.fromRGB(130, 130, 130)
+		if data.Callback then
+			data.Callback(state)
+		end
+	end)
+end
+
+
+
+
+
+
+local player = game.Players.LocalPlayer
+local ragdollConnection = nil
+
+-- Fungsi untuk anchor semua bagian tubuh
+local function anchorCharacter(char, state)
+	for _, part in pairs(char:GetDescendants()) do
+		if part:IsA("BasePart") and part.Name ~= "HumanoidRootPart" then
+			part.Anchored = state
+		end
+	end
+end
+
+-- Fungsi utama anti ragdoll
+local function handleRagdoll(char)
+	local humanoid = char:WaitForChild("Humanoid", 5)
+	if not humanoid then return end
+
+	-- Simpan koneksi agar bisa diputus saat toggle dimatikan
+	ragdollConnection = humanoid.StateChanged:Connect(function(_, newState)
+		if newState == Enum.HumanoidStateType.Physics 
+		or newState == Enum.HumanoidStateType.Ragdoll 
+		or newState == Enum.HumanoidStateType.FallingDown then
+
+			anchorCharacter(char, true)
+			wait(2.2) -- durasi anchor
+			anchorCharacter(char, false)
+
+			humanoid:ChangeState(Enum.HumanoidStateType.GettingUp)
+		end
+	end)
+end
+
+
+
+-- Saat toggle aktif
+AddToggle(mainTab, {
+	Name = "Anti Ragdol",
+	Callback = function(v)
+		print("Anti Slap:", v)
+		if v then
+			if player.Character then
+				handleRagdoll(player.Character)
+			end
+			player.CharacterAdded:Connect(function(char)
+				wait(0.5)
+				handleRagdoll(char)
+			end)
+		else
+			-- Jika dimatikan, putuskan koneksi anti ragdoll
+			if ragdollConnection then
+				ragdollConnection:Disconnect()
+				ragdollConnection = nil
+			end
+		end
+	end
+})
+
+
+
+
+local Players = game:GetService("Players")
+local localPlayer = Players.LocalPlayer
+
+-- Tabel untuk menyimpan koneksi & ESP
+local ESPConnections = {}
+local ESPActive = false
+
+-- Fungsi untuk buat ESP (Billboard + Highlight)
+local function createESP(player)
+	if player == localPlayer then return end
+
+	local function onCharacterAdded(character)
+		local head = character:WaitForChild("Head", 5)
+		if not head then return end
+
+		-- Bersihkan yang lama
+		if head:FindFirstChild("ESP_Name") then head:FindFirstChild("ESP_Name"):Destroy() end
+		if character:FindFirstChild("ESP_Highlight") then character:FindFirstChild("ESP_Highlight"):Destroy() end
+
+		-- BillboardGui
+		local billboard = Instance.new("BillboardGui")
+		billboard.Name = "ESP_Name"
+		billboard.Adornee = head
+		billboard.Size = UDim2.new(0, 100, 0, 40)
+		billboard.StudsOffset = Vector3.new(0, 1.5, 0)
+		billboard.AlwaysOnTop = true
+		billboard.Parent = head
+
+		local label = Instance.new("TextLabel")
+		label.Size = UDim2.new(1, 0, 1, 0)
+		label.BackgroundTransparency = 1
+		label.Text = player.Name
+		label.TextColor3 = Color3.new(1, 1, 1)
+		label.TextStrokeTransparency = 0.5
+		label.Font = Enum.Font.SourceSansBold
+		label.TextScaled = true
+		label.Parent = billboard
+
+		-- Highlight merah
+		local highlight = Instance.new("Highlight")
+		highlight.Name = "ESP_Highlight"
+		highlight.Adornee = character
+		highlight.FillColor = Color3.new(1, 0, 0)
+		highlight.FillTransparency = 0.5
+		highlight.OutlineColor = Color3.new(0, 0, 0)
+		highlight.OutlineTransparency = 0.2
+		highlight.Parent = character
+	end
+
+	-- Jalankan sekarang & saat respawn
+	if player.Character then onCharacterAdded(player.Character) end
+	local charConnect = player.CharacterAdded:Connect(onCharacterAdded)
+
+	-- Simpan koneksi untuk dibersihkan nanti
+	ESPConnections[player] = charConnect
+end
+
+-- Fungsi hapus semua ESP
+local function clearAllESP()
+	for _, player in ipairs(Players:GetPlayers()) do
+		if player ~= localPlayer then
+			local character = player.Character
+			if character then
+				if character:FindFirstChild("ESP_Highlight") then
+					character.ESP_Highlight:Destroy()
+				end
+				if character:FindFirstChild("Head") and character.Head:FindFirstChild("ESP_Name") then
+					character.Head.ESP_Name:Destroy()
+				end
+			end
+			if ESPConnections[player] then
+				ESPConnections[player]:Disconnect()
+				ESPConnections[player] = nil
+			end
+		end
+	end
+end
+
+-- Toggle ESP dari UI
+AddToggle(mainTab, {
+	Name = "Esp Player",
+	Callback = function(v)
+		ESPActive = v
+		print("ESP Player:", v)
+
+		if v then
+			-- Aktifkan ESP ke semua pemain
+			for _, player in ipairs(Players:GetPlayers()) do
+				createESP(player)
+			end
+
+			-- Deteksi pemain baru join
+			ESPConnections["_PlayerAdded"] = Players.PlayerAdded:Connect(function(player)
+				createESP(player)
+			end)
+		else
+			-- Matikan dan bersihkan semua ESP
+			clearAllESP()
+
+			if ESPConnections["_PlayerAdded"] then
+				ESPConnections["_PlayerAdded"]:Disconnect()
+				ESPConnections["_PlayerAdded"] = nil
+			end
+		end
+	end
+})
+
+
+
+
+
+-- Target JumpPower
+local boostedJump = 150
+local normalJump = 50
+local isEnabled = false -- Simpan status ON/OFF
+
+-- Ambil player
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+
+-- Fungsi untuk set JumpPower berdasarkan toggle
+local function applyJumpPower(humanoid)
+	if humanoid then
+		humanoid.UseJumpPower = true
+		humanoid.JumpPower = isEnabled and boostedJump or normalJump
+	end
+end
+
+-- Fungsi yang dijalankan tiap kali karakter respawn
+local function onCharacterAdded(character)
+	local humanoid = character:WaitForChild("Humanoid")
+	applyJumpPower(humanoid)
+end
+
+-- Dengarkan event CharacterAdded (respawn)
+player.CharacterAdded:Connect(onCharacterAdded)
+
+-- Jalankan pertama kali saat awal script aktif
+if player.Character then
+	onCharacterAdded(player.Character)
+end
+
+-- Tambahkan Toggle GUI (Fluxus UI)
+AddToggle(mainTab, {
+	Name = "JumpBooster",
+	Default = false,
+	Callback = function(state)
+		isEnabled = state -- Simpan status ON/OFF
+		print("JumpBooster:", state)
+
+		local character = player.Character
+		if character then
+			local humanoid = character:FindFirstChild("Humanoid")
+			if humanoid then
+				applyJumpPower(humanoid)
+			end
+		end
+	end
+})
+
+
+
+
+
+
+
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local player = Players.LocalPlayer
+
+local boostedSpeed = 42
+local normalSpeed = 38
+local enforceConnection
+local speedBoosterAktif = false
+
+-- Fungsi untuk menjaga speed
+local function enforceSpeed(humanoid)
+	if enforceConnection then
+		enforceConnection:Disconnect()
+	end
+
+	enforceConnection = RunService.Heartbeat:Connect(function()
+		if humanoid and humanoid.WalkSpeed ~= boostedSpeed then
+			humanoid.WalkSpeed = boostedSpeed
+		end
+	end)
+
+	-- Cegah perubahan dari luar
+	humanoid:GetPropertyChangedSignal("WalkSpeed"):Connect(function()
+		if speedBoosterAktif and humanoid.WalkSpeed ~= boostedSpeed then
+			humanoid.WalkSpeed = boostedSpeed
+		end
+	end)
+end
+
+-- Fungsi untuk aktifkan booster
+local function aktifkanSpeedBooster()
+	local character = player.Character or player.CharacterAdded:Wait()
+	local humanoid = character:WaitForChild("Humanoid")
+	enforceSpeed(humanoid)
+end
+
+-- Fungsi untuk nonaktifkan booster
+local function nonaktifkanSpeedBooster()
+	if enforceConnection then
+		enforceConnection:Disconnect()
+		enforceConnection = nil
+	end
+
+	local character = player.Character
+	if character then
+		local humanoid = character:FindFirstChildOfClass("Humanoid")
+		if humanoid then
+			humanoid.WalkSpeed = normalSpeed
+		end
+	end
+end
+
+-- Saat karakter respawn, jaga booster tetap aktif
+player.CharacterAdded:Connect(function()
+	if speedBoosterAktif then
+		aktifkanSpeedBooster()
+	end
+end)
+
+-- GUI Toggle Fluxus
+AddToggle(mainTab, {
+	Name = "Speed Booster",
+	Default = false,
+	Callback = function(v)
+		speedBoosterAktif = v
+		if v then
+			aktifkanSpeedBooster()
+			print("✅ Speed Booster AKTIF (WalkSpeed = " .. boostedSpeed .. ")")
+		else
+			nonaktifkanSpeedBooster()
+			print("⛔ Speed Booster NONAKTIF (WalkSpeed kembali ke " .. normalSpeed .. ")")
+		end
+	end
+})
+
+
+
+
+
+
+
+
+
+
+
+
+AddToggle(visualTab, {
+	Name = "Rejoin",
+	Callback = function(v)
+		print("rejoin:", v)
+		if v then
+			local TeleportService = game:GetService("TeleportService")
+			local Players = game:GetService("Players")
+			local player = Players.LocalPlayer
+
+			local placeId = game.PlaceId
+			local jobId = game.JobId
+
+			-- Rejoin ke server yang sama
+			TeleportService:TeleportToPlaceInstance(placeId, jobId, player)
+		end
+	end
+})
+
+
+AddToggle(visualTab, {
+	Name = "server hop",
+	Callback = function(v)
+		print("server lain:", v)
+		if v then
+			local HttpService = game:GetService("HttpService")
+			local TeleportService = game:GetService("TeleportService")
+			local Players = game:GetService("Players")
+			local player = Players.LocalPlayer
+
+			-- Ambil daftar server publik
+			local url = string.format("https://games.roblox.com/v1/games/%s/servers/Public?sortOrder=Asc&limit=100", game.PlaceId)
+
+			pcall(function()
+				local response = game:HttpGet(url)
+				local data = HttpService:JSONDecode(response)
+
+				for _, server in pairs(data.data) do
+					if server.playing < server.maxPlayers and server.id ~= game.JobId then
+						TeleportService:TeleportToPlaceInstance(game.PlaceId, server.id, player)
+						break
+					end
+				end
+			end)
+		end
+	end
+})
+
+
+
+
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+
+-- Fungsi untuk membuat tombol Leave Game
+local function createLeaveButton()
+	local screenGui = Instance.new("ScreenGui")
+	screenGui.Name = "LeaveConfirmationGui"
+	screenGui.ResetOnSpawn = false
+	screenGui.IgnoreGuiInset = true
+	screenGui.Parent = player:WaitForChild("PlayerGui")
+
+	local button = Instance.new("TextButton")
+	button.Name = "LeaveButton"
+	button.Size = UDim2.new(0, 102, 0, 26)
+	button.Position = UDim2.new(0.5, 0, 0.02, 0)
+	button.AnchorPoint = Vector2.new(0.5, 0)
+	button.BackgroundColor3 = Color3.fromRGB(44, 44, 44)
+	button.Text = "Leave Game"
+	button.Font = Enum.Font.GothamBold
+	button.TextSize = 14
+	button.TextColor3 = Color3.new(1, 1, 1)
+	button.Parent = screenGui
+
+	local corner = Instance.new("UICorner", button)
+	corner.CornerRadius = UDim.new(0, 8)
+
+	button.MouseButton1Click:Connect(function()
+		game:Shutdown()
+	end)
+end
+
+-- Fungsi untuk membuat tombol Reset
+local resetConnection = nil
+local function createResetButton()
+	local gui = player:WaitForChild("PlayerGui")
+
+	local screenGui = Instance.new("ScreenGui")
+	screenGui.Name = "ResetButtonGUI"
+	screenGui.ResetOnSpawn = false
+	screenGui.Parent = gui
+
+	local button = Instance.new("TextButton")
+	button.Size = UDim2.new(0, 70, 0, 28)
+	button.Position = UDim2.new(0, 10, 0, 10)
+	button.AnchorPoint = Vector2.new(0, 0)
+	button.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
+	button.TextColor3 = Color3.new(1, 1, 1)
+	button.Text = "Reset"
+	button.Font = Enum.Font.GothamBold
+	button.TextSize = 14
+	button.Parent = screenGui
+
+	local uicorner = Instance.new("UICorner")
+	uicorner.CornerRadius = UDim.new(0, 6)
+	uicorner.Parent = button
+
+	button.MouseButton1Click:Connect(function()
+		local character = player.Character or player.CharacterAdded:Wait()
+		local humanoid = character:FindFirstChildOfClass("Humanoid")
+		if humanoid then
+			humanoid.Health = 0
+		end
+		screenGui:Destroy()
+	end)
+
+	-- Pasang ulang GUI saat respawn
+	resetConnection = player.CharacterAdded:Connect(function()
+		task.wait(0.1)
+		if player:FindFirstChild("PlayerGui") and player.PlayerGui:FindFirstChild("ResetButtonGUI") == nil then
+			createResetButton()
+		end
+	end)
+end
+
+-- Fungsi untuk menghapus semua GUI
+local function removeAllButtons()
+	local gui = player:FindFirstChild("PlayerGui")
+	if gui then
+		local leaveGui = gui:FindFirstChild("LeaveConfirmationGui")
+		if leaveGui then leaveGui:Destroy() end
+
+		local resetGui = gui:FindFirstChild("ResetButtonGUI")
+		if resetGui then resetGui:Destroy() end
+	end
+
+	if resetConnection then
+		resetConnection:Disconnect()
+		resetConnection = nil
+	end
+end
+
+-- Toggle gabungan
+AddToggle(visualTab, {
+	Name = "leave + Reset",
+	Default = false,
+	Callback = function(v)
+		print("leave + Reset Toggle:", v)
+		if v then
+			createLeaveButton()
+			createResetButton()
+		else
+			removeAllButtons()
+		end
+	end
+})
+
+
+
+
+
+
+AddToggle(visualTab, {
+	Name = "Tp Shop",
+	Callback = function(v)
+		if v then
+			local player = game.Players.LocalPlayer
+			local character = player.Character or player.CharacterAdded:Wait()
+			local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+
+			local cf = CFrame.new(
+				-378.420959, -6.25197887, 59.4905052,
+				0.106838159, -1.85177775e-08, 0.994276404,
+				1.08971683e-07, 1, 6.91502233e-09,
+				-0.994276404, 1.07609189e-07, 0.106838159
+			)
+
+			humanoidRootPart.CFrame = cf
+			humanoidRootPart.Anchored = true
+			print("✅ Teleport ke Shop dan Anchor aktif 2 detik.")
+
+			task.delay(2, function()
+				humanoidRootPart.Anchored = false
+				print("🔓 Anchor dilepas.")
+			end)
+		end
+	end
+})
+
+
+local VirtualUser = game:GetService("VirtualUser")
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+
+local antiAfkConnection = nil
+
+AddToggle(miscTab, {
+	Name = "Anti Afk",
+	Default = false,
+	Callback = function(v)
+		print("Anti Afk:", v)
+
+		if v then
+			-- Aktifkan Anti AFK
+			if antiAfkConnection then antiAfkConnection:Disconnect() end
+			antiAfkConnection = player.Idled:Connect(function()
+				VirtualUser:Button2Down(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
+				wait(1)
+				VirtualUser:Button2Up(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
+				print("🛡️ Anti-AFK triggered.")
+			end)
+			print("✅ Anti-AFK Aktif.")
+		else
+			-- Nonaktifkan Anti AFK
+			if antiAfkConnection then
+				antiAfkConnection:Disconnect()
+				antiAfkConnection = nil
+				print("⛔ Anti-AFK Dimatikan.")
+			end
+		end
+	end
+})
+
+
+
+
+
+
+
+
+local player = game:GetService("Players").LocalPlayer
+local camera = workspace.CurrentCamera
+
+local function removeLaggyStuff()
+	for _, obj in pairs(workspace:GetDescendants()) do
+		if obj:IsA("ParticleEmitter")
+		or obj:IsA("Trail")
+		or obj:IsA("Smoke")
+		or obj:IsA("Fire")
+		or obj:IsA("Explosion")
+		or obj:IsA("Sound")
+		or obj:IsA("Beam")
+		or obj:IsA("Texture")
+		or obj:IsA("Decal") then
+			pcall(function() obj:Destroy() end)
+		end
+	end
+end
+
+local function optimizeLighting()
+	pcall(function()
+		local lighting = game:GetService("Lighting")
+		lighting.FogEnd = 1e10
+		lighting.FogStart = 1e10
+		lighting.Brightness = 0
+		lighting.GlobalShadows = false
+	end)
+end
+
+local function clearCamera()
+	camera:ClearAllChildren()
+end
+
+-- Toggle GUI
+AddToggle(miscTab, {
+	Name = "Anti lag",
+	Default = false,
+	Callback = function(v)
+		print("Anti Lag:", v)
+		if v then
+			removeLaggyStuff()
+			optimizeLighting()
+			clearCamera()
+			print("✅ Anti Lag Aktif - Efek berat dibersihkan.")
+		else
+			print("⛔ Anti Lag Nonaktif - Tidak mengembalikan efek yang dihapus.")
+		end
+	end
+})
+
+
+
+
+
+AddToggle(miscTab, {
+	Name = "Auto Steal",
+	Callback = function(v)
+		if v then
+			-- Buat GUI saat toggle ON
+			if game.CoreGui:FindFirstChild("StealGui") then
+				game.CoreGui:FindFirstChild("StealGui"):Destroy()
+			end
+
+			local gui = Instance.new("ScreenGui")
+			gui.Name = "StealGui"
+			gui.ResetOnSpawn = false
+			gui.Parent = game:GetService("CoreGui")
+
+			local frame = Instance.new("Frame")
+			frame.Size = UDim2.new(0, 200, 0, 80)
+			frame.Position = UDim2.new(0, 100, 0, 100)
+			frame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+			frame.BorderSizePixel = 0
+			frame.Active = true
+			frame.Draggable = true
+			frame.Parent = gui
+
+			local corner = Instance.new("UICorner")
+			corner.CornerRadius = UDim.new(0, 12)
+			corner.Parent = frame
+
+			local stroke = Instance.new("UIStroke")
+			stroke.Thickness = 2
+			stroke.Color = Color3.fromRGB(255, 255, 255)
+			stroke.Parent = frame
+
+			local button = Instance.new("TextButton")
+			button.Size = UDim2.new(1, -20, 0, 40)
+			button.Position = UDim2.new(0, 10, 0.5, -20)
+			button.BackgroundColor3 = Color3.fromRGB(255, 70, 70)
+			button.Text = "Steal Best In Server"
+			button.TextColor3 = Color3.fromRGB(255, 255, 255)
+			button.Font = Enum.Font.GothamBold
+			button.TextSize = 14
+			button.Parent = frame
+
+			local btnCorner = Instance.new("UICorner")
+			btnCorner.CornerRadius = UDim.new
